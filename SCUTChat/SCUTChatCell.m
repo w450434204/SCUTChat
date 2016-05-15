@@ -20,7 +20,10 @@
     if ([body isKindOfClass:[EMTextMessageBody class]]) {//文本消息
         EMTextMessageBody *textBody = body;
         self.messageLabel.text = textBody.text;
-    }else{
+    }else if([body isKindOfClass:[EMVoiceMessageBody class]]){//语音消息
+        self.messageLabel.text = @"【语音】";
+    }
+    else{
         self.messageLabel.text = @"未知类型";
     }
     

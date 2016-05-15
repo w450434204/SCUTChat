@@ -10,7 +10,7 @@
 #import "SCUTChatCell.h"
 
 
-@interface ChatViewController () <UITableViewDataSource,UITableViewDelegate,UITextViewDelegate>
+@interface ChatViewController () <UITableViewDataSource,UITableViewDelegate,UITextViewDelegate,EMChatManagerDelegate>
 /**输入工具条底部的约束*/
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *inputToolBarBottomConstraint;
 
@@ -42,6 +42,10 @@
     
     // 加载本地数据库聊天记录（MessageV1）
     [self loadLocalChatRecords];
+    
+    
+    // 设置聊天管理器的代理
+    [[EaseMob sharedInstance].chatManager addDelegate:self delegateQueue:nil];
     
     // 给计算高度的cell工具对象 赋值
     self.chatCellTool = [self.tableView dequeueReusableCellWithIdentifier:ReceiverCell];
@@ -209,6 +213,24 @@
 
     NSIndexPath *lastIndex = [NSIndexPath indexPathForRow:self.dataSources.count - 1 inSection:0];
     [self.tableView scrollToRowAtIndexPath:lastIndex atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+}
+
+ -(void)didReceiveMessage:(EMMessage *)message
+{
+#warning from 一定等于当前聊天用户才可以刷新数据
+    //test1 - test7
+    //test1 - test8
+    if ([message.from isEqualToString:self.buddy.username]) {
+        //1.把接收的消息添加到数据源
+        [self.dataSources addObject:message];
+        
+        //2.刷新表格
+        [self.tableView reloadData];
+        
+        //3.显示数据到底部
+        [self scrollToBottom];
+        
+    }
 }
 
 @end
