@@ -11,7 +11,6 @@
  */
 
 #import "EMAudioRecorderUtil.h"
-#import <UIKit/UIKit.h>
 #import "EaseMob.h"
 
 static EMAudioRecorderUtil *audioRecorderUtil = nil;

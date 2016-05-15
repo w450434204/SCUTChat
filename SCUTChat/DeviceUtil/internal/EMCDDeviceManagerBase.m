@@ -12,7 +12,7 @@
 
 #import "EMCDDeviceManagerBase.h"
 #import "EMCDDeviceManager+ProximitySensor.h"
-#import <UIKit/UIKit.h>
+#import "EaseMob.h"
 
 static EMCDDeviceManager *emCDDeviceManager;
 @interface EMCDDeviceManager (){

@@ -14,6 +14,7 @@
 @interface ChatViewController () <UITableViewDataSource,UITableViewDelegate,UITextViewDelegate,EMChatManagerDelegate>
 /**输入工具条底部的约束*/
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *inputToolBarBottomConstraint;
+@property (weak, nonatomic) IBOutlet UITextView *textView;
 
 /** 数据源 */
 @property (nonatomic, strong) NSMutableArray *dataSources;
@@ -273,6 +274,19 @@
     // 1.显示录音按钮
     self.recordBtn.hidden = !self.recordBtn.hidden;
     
+    if (self.recordBtn.hidden == NO) {//录音按钮要显示
+        //InputToolBar 的高度要回来默认(46);
+        self.inputToolBarHegihtConstraint.constant = 46;
+        // 隐藏键盘
+        [self.view endEditing:YES];
+    }else{
+        //当不录音的时候，键盘显示
+        [self.textView becomeFirstResponder];
+        
+        // 恢复InputToolBar高度
+        [self textViewDidChange:self.textView];
+    }
+    
 }
 
 
@@ -334,6 +348,12 @@
             NSLog(@"语音发送失败");
         }
     } onQueue:nil];
+    
+    // 3.把消息添加到数据源，然后再刷新表格
+    [self.dataSources addObject:msgObj];
+    [self.tableView reloadData];
+    // 4.把消息显示在顶部
+    [self scrollToBottom];
     
 }
 #pragma mark 手指从按钮外面松开取消录音

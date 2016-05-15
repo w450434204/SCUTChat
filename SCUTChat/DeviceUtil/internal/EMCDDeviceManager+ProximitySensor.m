@@ -11,7 +11,7 @@
  */
 
 #import "EMCDDeviceManager+ProximitySensor.h"
-#import <UIKit/UIKit.h>
+#import "EaseMob.h"
 
 @implementation EMCDDeviceManager (ProximitySensor)
 @dynamic isSupportProximitySensor;
