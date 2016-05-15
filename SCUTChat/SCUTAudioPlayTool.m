@@ -29,6 +29,7 @@ static UIImageView *animatingImageView;//正在执行动画的ImageView
     // 如果本地语音文件不存在，使用服务器语音
     NSFileManager *manager = [NSFileManager defaultManager];
     if (![manager fileExistsAtPath:path]) {
+        NSLog(@"本地语音不存在");
         path = voiceBody.remotePath;
     }
     
