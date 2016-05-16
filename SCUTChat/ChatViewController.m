@@ -36,6 +36,10 @@
 /** 当前添加的时间 */
 @property (nonatomic, copy) NSString *currentTimeStr;
 
+
+/** 当前会话对象 */
+@property (nonatomic, strong) EMConversation *conversation;
+
 @end
 
 @implementation ChatViewController
@@ -81,6 +85,8 @@
     
     // 要获取本地聊天记录使用 会话对象
     EMConversation *conversation = [[EaseMob sharedInstance].chatManager conversationForChatter:self.buddy.username conversationType:eConversationTypeChat];
+    
+    self.conversation = conversation;
     
     // 加载与当前聊天用户所有聊天记录
     NSArray *messages = [conversation loadAllMessages];
@@ -264,7 +270,7 @@
     //test1 - test8
     if ([message.from isEqualToString:self.buddy.username]) {
         //1.把接收的消息添加到数据源
-        [self.dataSources addObject:message];
+        [self addDataSourcesWithMessage:message];
         
         //2.刷新表格
         [self.tableView reloadData];
@@ -437,7 +443,9 @@
     // 2.再加EMMessage
     [self.dataSources addObject:msg];
     
-    
+    // 3.设置消息为已读取
+    [self.conversation markMessageWithId:msg.messageId asRead:YES];
+
 }
 
 

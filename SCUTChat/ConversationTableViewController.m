@@ -8,8 +8,16 @@
 
 #import "ConversationTableViewController.h"
 #import "EaseMob.h"
+#import "ChatViewController.h"
 
 @interface ConversationTableViewController () <EMChatManagerDelegate,EMChatManagerDelegateBase>
+
+/** 历史会话记录 */
+@property (nonatomic, strong) NSArray *conversations;
+
+
+ 
+
 
 @end
 
@@ -22,9 +30,28 @@
     
     //设置代理
     [[EaseMob sharedInstance].chatManager addDelegate:self delegateQueue:nil];
+    
+    //获取历史会话记录
+    [self loadConversations];
  
 }
 
+-(void)loadConversations{
+    //获取历史会话记录
+    //1.从内存获取历史会话记录
+    NSArray *conversations = [[EaseMob sharedInstance].chatManager conversations];
+    
+    //2.如果内存里没有会话记录，从数据库Conversation表
+    if (conversations.count == 0) {
+        conversations =  [[EaseMob sharedInstance].chatManager loadAllConversationsFromDatabaseWithAppend2Chat:YES];
+    }
+    
+    NSLog(@"zzzzzzz %@",conversations);
+    self.conversations = conversations;
+    
+    //显示总的未读数
+    [self showTabBarBadge];
+}
 
 #pragma mark - chatManager代理方法
 //1.监听网络状态
@@ -115,6 +142,8 @@
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"好友添加消息" message:message preferredStyle:UIAlertControllerStyleAlert];
     [self presentViewController:alert animated:YES completion:nil];
 }
+
+
 - (void)dealloc
 {
     NSLog(@"%s",__func__);
@@ -134,66 +163,104 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
  
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
  
-    return 0;
+    return self.conversations.count;
 }
 
-/*
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
     
-    // Configure the cell...
+    static NSString *ID =  @"ConversationCell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ID];
+    
+    //获取会话模型
+    EMConversation *conversaion = self.conversations[indexPath.row];
+    
+    // 显示数据
+    // 1.显示用户名
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ ==== 未读消息数:%ld",conversaion.chatter,[conversaion unreadMessagesCount]];
+    
+    // 2.显示最新的一条记录
+    // 获取消息体
+    id body = conversaion.latestMessage.messageBodies[0];
+    if ([body isKindOfClass:[EMTextMessageBody class]]) {
+        EMTextMessageBody *textBody = body;
+        cell.detailTextLabel.text = textBody.text;
+    }else if ([body isKindOfClass:[EMVoiceMessageBody class]]){
+        EMVoiceMessageBody *voiceBody = body;
+        cell.detailTextLabel.text = [voiceBody displayName];
+    }else if([body isKindOfClass:[EMImageMessageBody class]]){
+        EMImageMessageBody *imgBody = body;
+        cell.detailTextLabel.text = imgBody.displayName;
+    }else{
+        cell.detailTextLabel.text = @"未知消息类型";
+    }
     
     return cell;
+    
+  
 }
-*/
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+
+#pragma mark - UITableViewDelegate
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    //进入到聊天控制器
+    //1.从storybaord中根据Identifier标识符加载聊天控制器
+    ChatViewController *chatVc = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ChatPage"];
+    //会话
+    EMConversation *conversation = self.conversations[indexPath.row];
+    EMBuddy *buddy = [EMBuddy buddyWithUsername:conversation.chatter];
+    //2.设置好友属性
+    chatVc.buddy = buddy;
+    
+    //3.展现聊天界面
+    [self.navigationController pushViewController:chatVc animated:YES];
+    
+    
 }
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+
+#pragma mark 历史会话列表更新
+-(void)didUpdateConversationList:(NSArray *)conversationList{
+    
+    //给数据源重新赋值
+    self.conversations = conversationList;
+    
+    //刷新表格
+    [self.tableView reloadData];
+    
+    //显示总的未读数
+    [self showTabBarBadge];
+    
 }
-*/
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+#pragma mark 未读消息数改变
+- (void)didUnreadMessagesCountChanged{
+    //更新表格
+    [self.tableView reloadData];
+    //显示总的未读数
+    [self showTabBarBadge];
+    
 }
-*/
 
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
+-(void)showTabBarBadge{
+    //遍历所有的会话记录，将未读取的消息数进行累
+    
+    NSInteger totalUnreadCount = 0;
+    for (EMConversation *conversation in self.conversations) {
+        totalUnreadCount += [conversation unreadMessagesCount];
+    }
+    
+    self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld",totalUnreadCount];
+    
 }
-*/
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

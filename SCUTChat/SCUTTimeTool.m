@@ -26,9 +26,9 @@
     NSInteger currentYear = components.year;
     NSInteger currentMonth = components.month;
     NSInteger currentDay = components.day;
-    NSLog(@"currentYear %ld",components.year);
-    NSLog(@"currentMonth %ld",components.month);
-    NSLog(@"currentDay %ld",components.day);
+//    NSLog(@"currentYear %ld",components.year);
+//    NSLog(@"currentMonth %ld",components.month);
+//    NSLog(@"currentDay %ld",components.day);
     
     
     //2.获取消息发送时间
@@ -42,10 +42,10 @@
     CGFloat msgMonth = components.month;
     CGFloat msgDay = components.day;
 
-    NSLog(@"msgYear %ld",components.year);
-    NSLog(@"msgMonth %ld",components.month);
-    NSLog(@"msgDay %ld",components.day);
-    
+//    NSLog(@"msgYear %ld",components.year);
+//    NSLog(@"msgMonth %ld",components.month);
+//    NSLog(@"msgDay %ld",components.day);
+//    
     
     //3.判断:
     /*今天：(HH:mm)
