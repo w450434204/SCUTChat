@@ -6,7 +6,8 @@
 1.使用环信的思想
 》所有网络请求使用 [EaseMob sharedInstance].chatManager "聊天管理器"
 》结果(自动登录、自动连接)-通过代理来回调
-调用chatManager "聊天管理器" 的 【- (void)addDelegate:(id<EMChatManagerDelegate>)delegate delegateQueue:(dispatch_queue_t)queue;】
+调用chatManager "聊天管理器" 的 
+【- (void)addDelegate:(id<EMChatManagerDelegate>)delegate delegateQueue:(dispatch_queue_t)queue;】
 
 2.添加好友注意
 1.添加聊天管理器的代理时，在控制器被dealloc的时候，应该移除代理
@@ -28,8 +29,13 @@
 
 4.接收到好友的同意好友请求后，要刷新好友列表数据
 5.完善输入框
+
 6.发语音
+ 发送语音需要引用第三方库,设置全局异常断点时会出现问题。当用户滑动界面时候要停止语音的播放 
+
 7.发图片
+利用SDWebImage第三方框架,显示本地照片和从服务器下载最新的照片。 这里要注意TableViewCell图片的重用问题。
+
 8.聊天的时间显示
 时间显示的规则
 同一分中内的消息，只显示一个时间

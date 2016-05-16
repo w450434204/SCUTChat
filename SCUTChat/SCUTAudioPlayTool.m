@@ -34,7 +34,7 @@ static UIImageView *animatingImageView;//正在执行动画的ImageView
     }
     
     
-#warning mark - 调用这个函数播放语音会崩溃 暂时不知道原因
+    //添加全局异常断点，调用这个函数播放语音会卡顿。不知道原因
     [[EMCDDeviceManager sharedInstance] asyncPlayingWithPath:path completion:^(NSError *error) {
         
         NSLog(@"语音播放完成 %@",error);
@@ -73,5 +73,13 @@ static UIImageView *animatingImageView;//正在执行动画的ImageView
     
     NSLog(@"调用次数");
     
+}
+
++(void)stop{
+    //停止播放语音
+    [[EMCDDeviceManager sharedInstance] stopPlaying];
+    //移除动画
+    [animatingImageView stopAnimating];
+    [animatingImageView removeFromSuperview];
 }
 @end

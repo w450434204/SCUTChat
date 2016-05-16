@@ -9,6 +9,17 @@
 #import "SCUTChatCell.h"
 #import "EMCDDeviceManager.h"
 #import "SCUTAudioPlayTool.h"
+#import "UIImageView+WebCache.h"
+
+@interface SCUTChatCell()
+
+@property (nonatomic, strong) UIImageView *chatImgView;  //UI控件一般使用Weak,软加载时候要使用strong
+
+
+@end
+
+
+
 
 @implementation SCUTChatCell
 
@@ -20,6 +31,17 @@
     [self.messageLabel addGestureRecognizer:tap];
     
 }
+
+
+-(UIImageView *)chatImgView
+{
+    if (!_chatImgView) {
+        _chatImgView = [[UIImageView alloc] init];
+    }
+    
+    return _chatImgView;
+}
+
 
 #pragma mark messagelabel 点击的触发方法
 -(void)messageLabelTap:(UITapGestureRecognizer *)recognizer{
@@ -39,6 +61,9 @@
 
 -(void)setMessage:(EMMessage *)message{
     
+#warning mark -  重用时，把聊天图片控件移除(在这个方法中移除是因为肯定会调用这个方法)
+    [self.chatImgView removeFromSuperview];
+    
     _message = message;
     
     // 1.获取消息体
@@ -49,6 +74,8 @@
     }else if([body isKindOfClass:[EMVoiceMessageBody class]]){//语音消息
         //        self.messageLabel.text = @"【语音】";
         self.messageLabel.attributedText = [self voiceAtt];
+    }else if([body isKindOfClass:[EMImageMessageBody class]]){//图片消息
+        [self showImage];
     }
     else{
         self.messageLabel.text = @"未知类型";
@@ -56,6 +83,45 @@
     
     
 }
+
+-(void)showImage{
+
+    
+    // 获取图片消息体
+    EMImageMessageBody *imgBody = self.message.messageBodies[0];
+    CGRect thumbnailFrm = (CGRect){0,0,imgBody.thumbnailSize};
+    
+    // 设置Label的尺寸足够显示UIImageView
+    NSTextAttachment *imgAttach = [[NSTextAttachment alloc] init];
+    imgAttach.bounds = thumbnailFrm;
+    NSAttributedString *imgAtt = [NSAttributedString attributedStringWithAttachment:imgAttach];
+    self.messageLabel.attributedText = imgAtt;
+    
+    //1.cell里添加一个UIImageView
+    self.chatImgView = [[UIImageView alloc] init];
+    [self.messageLabel addSubview:self.chatImgView];
+    self.chatImgView.backgroundColor = [UIColor redColor];
+    
+    //2.设置图片控件为缩略图的尺寸
+    self.chatImgView.frame = thumbnailFrm;
+    
+    //3.下载图片
+    NSLog(@"thumbnailLocalPath %@",imgBody.thumbnailLocalPath);
+    NSLog(@"thumbnailRemotePath %@",imgBody.thumbnailRemotePath);
+    NSFileManager *manager = [NSFileManager defaultManager];
+    // 如果本地图片存在，直接从本地显示图片
+    UIImage *palceImg = [UIImage imageNamed:@"downloading"];
+    if ([manager fileExistsAtPath:imgBody.thumbnailLocalPath]) {
+#warning 本地路径使用fileURLWithPath方法
+        [self.chatImgView sd_setImageWithURL:[NSURL fileURLWithPath:imgBody.thumbnailLocalPath] placeholderImage:palceImg];
+    }else{
+        // 如果本地图片不存，从网络加载图片
+        [self.chatImgView sd_setImageWithURL:[NSURL URLWithString:imgBody.thumbnailRemotePath] placeholderImage:palceImg];
+    }
+    
+    
+}
+
 
 #pragma mark 返回语音富文本
 -(NSAttributedString *)voiceAtt{

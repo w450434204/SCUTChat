@@ -156,6 +156,9 @@
                                             <constraint firstAttribute="width" constant="30" id="lLU-z0-t8U"/>
                                         </constraints>
                                         <state key="normal" image="chatBar_more"/>
+                                        <connections>
+                                            <action selector="showImgPickerAction:" destination="0wz-Ve-mRh" eventType="touchUpInside" id="2ZE-l2-NyD"/>
+                                        </connections>
                                     </button>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="gNK-md-irM">
                                         <rect key="frame" x="41" y="8" width="200" height="30"/>
@@ -201,7 +204,7 @@
                                     <constraint firstItem="4H9-Pd-Zyg" firstAttribute="leading" secondItem="1Kh-a7-wB1" secondAttribute="trailing" constant="3" id="zoj-NF-jqI"/>
                                 </constraints>
                             </view>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="87" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="L7i-yh-Taw">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="87" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="L7i-yh-Taw">
                                 <rect key="frame" x="0.0" y="64" width="320" height="455"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
@@ -209,7 +212,7 @@
                                         <rect key="frame" x="0.0" y="28" width="320" height="87"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="41P-wf-75w" id="3ZH-hF-q5p">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="86"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="87"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chatListCellHead" translatesAutoresizingMaskIntoConstraints="NO" id="85D-xv-eO2">
@@ -226,11 +229,11 @@
                                                 <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="240" translatesAutoresizingMaskIntoConstraints="NO" id="FKN-Fe-9ME">
                                                     <rect key="frame" x="60" y="15" width="42" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
-                                            <color key="backgroundColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <constraints>
                                                 <constraint firstItem="85D-xv-eO2" firstAttribute="top" secondItem="3ZH-hF-q5p" secondAttribute="top" constant="5" id="CvF-ZX-niP"/>
                                                 <constraint firstItem="FKN-Fe-9ME" firstAttribute="leading" secondItem="85D-xv-eO2" secondAttribute="trailing" constant="20" id="NL2-5H-Gix"/>
@@ -250,7 +253,7 @@
                                         <rect key="frame" x="0.0" y="115" width="320" height="87"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gdv-Jf-TrB" id="88q-9a-f9t">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="86"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="87"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chatListCellHead" translatesAutoresizingMaskIntoConstraints="NO" id="3WE-f9-D58" userLabel="SenderCellHead">
@@ -267,7 +270,7 @@
                                                 <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="242" translatesAutoresizingMaskIntoConstraints="NO" id="eNc-2x-iNi">
                                                     <rect key="frame" x="220" y="15" width="42" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -282,7 +285,7 @@
                                                 <constraint firstItem="3WE-f9-D58" firstAttribute="leading" secondItem="eNc-2x-iNi" secondAttribute="trailing" constant="15" id="vKt-KB-t6r"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" red="1" green="0.37381635460000001" blue="0.2752086098" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <connections>
                                             <outlet property="messageLabel" destination="eNc-2x-iNi" id="PS9-f8-mSm"/>
                                         </connections>

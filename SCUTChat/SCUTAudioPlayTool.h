@@ -12,4 +12,6 @@
 @interface SCUTAudioPlayTool : NSObject
 
 +(void)playWithMessage:(EMMessage *)msg msgLabel:(UILabel *)msgLabel receiver:(BOOL)receiver;
+
++(void)stop;
 @end

@@ -9,9 +9,10 @@
 #import "ChatViewController.h"
 #import "SCUTChatCell.h"
 #import "EMCDDeviceManager.h"
+#import "SCUTAudioPlayTool.h"
 
 
-@interface ChatViewController () <UITableViewDataSource,UITableViewDelegate,UITextViewDelegate,EMChatManagerDelegate>
+@interface ChatViewController () <UITableViewDataSource,UITableViewDelegate,UITextViewDelegate,EMChatManagerDelegate,UIImagePickerControllerDelegate>
 /**输入工具条底部的约束*/
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *inputToolBarBottomConstraint;
 @property (weak, nonatomic) IBOutlet UITextView *textView;
@@ -45,6 +46,7 @@
  
  
     self.title = self.buddy.username;
+    self.tableView.backgroundColor = [UIColor colorWithRed:246/255.0 green:246/255.0 blue:246/255.0 alpha:1];
     
     // 加载本地数据库聊天记录（MessageV1）
     [self loadLocalChatRecords];
@@ -61,6 +63,7 @@
     
     //2.监听键盘退出，inputToolbar恢复原位
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(kbWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    
 }
 
 
@@ -110,7 +113,7 @@
 }
 
 
-#pragma mark 表格数据源
+
 #pragma mark 表格数据源
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.dataSources.count;
@@ -172,7 +175,7 @@
     // 2.监听Send事件--判断最后的一个字符是不是换行字符
     if ([textView.text hasSuffix:@"\n"]) {
         NSLog(@"发送操作");
-        [self sendMessage:textView.text];
+        [self sendText:textView.text];
         
         // 清空textView的文字
         textView.text = nil;
@@ -190,20 +193,18 @@
     }];
     
     
-    // 4.记光标回到原位
-#warning 技巧
+    // 4.记光标回到原位-技巧
     [textView setContentOffset:CGPointZero animated:YES];
     [textView scrollRangeToVisible:textView.selectedRange];
 }
 
 
--(void)sendMessage:(NSString *)text{
+#pragma mark - 发送聊天文本
+-(void)sendText:(NSString *)text{
     
     // 把最后一个换行字符去除
 #warning 换行字符 只占用一个长度
     text = [text substringToIndex:text.length - 1];
-    
-    //消息 ＝ 消息头 + 消息体
 #warning 每一种消息类型对象不同的消息体
     //    EMTextMessageBody 文本消息体
     //    EMVoiceMessageBody 录音消息体
@@ -213,30 +214,10 @@
     NSLog(@"要发送给 %@",self.buddy.username);
     // 创建一个聊天文本对象
     EMChatText *chatText = [[EMChatText alloc] initWithText:text];
-    
     //创建一个文本消息体
     EMTextMessageBody *textBody = [[EMTextMessageBody alloc] initWithChatObject:chatText];
     
-    //1.创建一个消息对象
-    EMMessage *msgObj = [[EMMessage alloc] initWithReceiver:self.buddy.username bodies:@[textBody]];
-    //消息类型
-//    @constant eMessageTypeChat            单聊消息
-//    @constant eMessageTypeGroupChat       群聊消息
-//    @constant eMessageTypeChatRoom        聊天室消息
-    msgObj.messageType = eMessageTypeChat;
-    
-    // 2.发送消息
-    [[EaseMob sharedInstance].chatManager asyncSendMessage:msgObj progress:nil prepare:^(EMMessage *message, EMError *error) {
-        NSLog(@"准备发送消息");
-    } onQueue:nil completion:^(EMMessage *message, EMError *error) {
-        NSLog(@"完成消息发送 %@",error);
-    } onQueue:nil];
-    
-    // 3.把消息添加到数据源，然后再刷新表格
-    [self.dataSources addObject:msgObj];
-    [self.tableView reloadData];
-    // 4.把消息显示在顶部
-    [self scrollToBottom];
+    [self sendMessage:textBody];
 }
 
 -(void)scrollToBottom{
@@ -273,6 +254,7 @@
     
     // 1.显示录音按钮
     self.recordBtn.hidden = !self.recordBtn.hidden;
+    self.textView.hidden  = ! self.textView.hidden;
     
     if (self.recordBtn.hidden == NO) {//录音按钮要显示
         //InputToolBar 的高度要回来默认(46);
@@ -332,21 +314,37 @@
     EMVoiceMessageBody *voiceBody = [[EMVoiceMessageBody alloc] initWithChatObject:chatVoice];
     voiceBody.duration = duration;
     
-    // 2.构造一个消息对象
-    EMMessage *msgObj = [[EMMessage alloc] initWithReceiver:self.buddy.username bodies:@[voiceBody]];
-    //聊天的类型 单聊
+    [self sendMessage:voiceBody];
+    
+}
+
+
+#pragma mark 发送图片
+-(void)sendImg:(UIImage *)selectedImg{
+    
+    //1.构造图片消息体
+    /*
+     * 第一个参数：原始大小的图片对象 1000 * 1000
+     * 第二个参数: 缩略图的图片对象  120 * 120
+     */
+    EMChatImage *orginalChatImg = [[EMChatImage alloc] initWithUIImage:selectedImg displayName:@"【图片】"];
+    
+    EMImageMessageBody *imgBody = [[EMImageMessageBody alloc] initWithImage:orginalChatImg thumbnailImage:nil];
+    
+    [self sendMessage:imgBody];
+    
+}
+
+-(void)sendMessage:(id<IEMMessageBody>)body{
+    //1.构造消息对象
+    EMMessage *msgObj = [[EMMessage alloc] initWithReceiver:self.buddy.username bodies:@[body]];
     msgObj.messageType = eMessageTypeChat;
     
-    // 3.发送
+    //2.发送消息
     [[EaseMob sharedInstance].chatManager asyncSendMessage:msgObj progress:nil prepare:^(EMMessage *message, EMError *error) {
-        NSLog(@"准备发送语音");
-        
+        NSLog(@"准备发送图片");
     } onQueue:nil completion:^(EMMessage *message, EMError *error) {
-        if (!error) {
-            NSLog(@"语音发送成功");
-        }else{
-            NSLog(@"语音发送失败");
-        }
+        NSLog(@"图片发送成功 %@",error);
     } onQueue:nil];
     
     // 3.把消息添加到数据源，然后再刷新表格
@@ -356,10 +354,42 @@
     [self scrollToBottom];
     
 }
+
+
 #pragma mark 手指从按钮外面松开取消录音
 - (IBAction)cancelRecordAction:(id)sender {
     [[EMCDDeviceManager sharedInstance] cancelCurrentRecording];
     
+}
+
+- (IBAction)showImgPickerAction:(id)sender {
+    //显示图片选择的控制器
+    UIImagePickerController *imgPicker = [[UIImagePickerController alloc] init];
+    
+    // 设置源
+    imgPicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    imgPicker.delegate = self;
+    
+    [self presentViewController:imgPicker animated:YES completion:NULL];
+}
+
+/**用户选中图片的回调*/
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
+    
+    //1.获取用户选中的图片
+    UIImage *selectedImg =  info[UIImagePickerControllerOriginalImage];
+    
+    //2.发送图片
+    [self sendImg:selectedImg];
+    
+    //3.隐藏当前图片选择控制器
+    [self dismissViewControllerAnimated:YES completion:NULL];
+    
+}
+
+-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+    //停止语音播放
+    [SCUTAudioPlayTool stop];
 }
 
 
