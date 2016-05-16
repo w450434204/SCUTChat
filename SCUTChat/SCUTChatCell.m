@@ -105,9 +105,11 @@
     //2.设置图片控件为缩略图的尺寸
     self.chatImgView.frame = thumbnailFrm;
     
+    
+    
     //3.下载图片
-    NSLog(@"thumbnailLocalPath %@",imgBody.thumbnailLocalPath);
-    NSLog(@"thumbnailRemotePath %@",imgBody.thumbnailRemotePath);
+//    NSLog(@"thumbnailLocalPath %@",imgBody.thumbnailLocalPath);
+//    NSLog(@"thumbnailRemotePath %@",imgBody.thumbnailRemotePath);
     NSFileManager *manager = [NSFileManager defaultManager];
     // 如果本地图片存在，直接从本地显示图片
     UIImage *palceImg = [UIImage imageNamed:@"downloading"];

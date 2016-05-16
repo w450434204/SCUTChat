@@ -10,6 +10,9 @@
 #import "SCUTChatCell.h"
 #import "EMCDDeviceManager.h"
 #import "SCUTAudioPlayTool.h"
+#import "SCUTTimeCell.h"
+#import "SCUTTimeTool.h"
+
 
 
 @interface ChatViewController () <UITableViewDataSource,UITableViewDelegate,UITextViewDelegate,EMChatManagerDelegate,UIImagePickerControllerDelegate>
@@ -28,6 +31,10 @@
 
 /** InputToolBar 高度的约束*/
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *inputToolBarHegihtConstraint;
+
+
+/** 当前添加的时间 */
+@property (nonatomic, copy) NSString *currentTimeStr;
 
 @end
 
@@ -68,6 +75,10 @@
 
 
 -(void)loadLocalChatRecords{
+    
+    //假设在数组的第一位置添加时间
+//        [self.dataSources addObject:@"16:06"];
+    
     // 要获取本地聊天记录使用 会话对象
     EMConversation *conversation = [[EaseMob sharedInstance].chatManager conversationForChatter:self.buddy.username conversationType:eConversationTypeChat];
     
@@ -78,8 +89,12 @@
         NSLog(@"%@",[obj class]);
     }
     
-    // 添加到数据源,数据源中保存的都是 模型对象
-    [self.dataSources addObjectsFromArray:messages];
+//    // 添加到数据源,数据源中保存的都是 模型对象
+//    [self.dataSources addObjectsFromArray:messages];
+ 
+    for (EMMessage *msgObj in messages) {
+        [self addDataSourcesWithMessage:msgObj];
+    }
 }
 
 
@@ -120,6 +135,10 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if ([self.dataSources[indexPath.row] isKindOfClass:[NSString class]]) {  //时间Cell的高度固定
+        return 18;
+    }
     // 设置label的数据
     // 1.获取消息模型
     EMMessage *msg = self.dataSources[indexPath.row];
@@ -130,6 +149,14 @@
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    //0.注意只有时间的Cell数据源是NSSting,其他类型的Cell都对应着模型
+    //判断数据源类型
+    if ([self.dataSources[indexPath.row] isKindOfClass:[NSString class]]) {//显示时间cell
+        SCUTTimeCell *timeCell = [tableView dequeueReusableCellWithIdentifier:@"TimeCell"];
+        timeCell.timeLabel.text = self.dataSources[indexPath.row];
+        return timeCell;
+    }
+    
     
     //1.先获取消息模型
     EMMessage *message = self.dataSources[indexPath.row];
@@ -348,7 +375,7 @@
     } onQueue:nil];
     
     // 3.把消息添加到数据源，然后再刷新表格
-    [self.dataSources addObject:msgObj];
+    [self addDataSourcesWithMessage:msgObj];
     [self.tableView reloadData];
     // 4.把消息显示在顶部
     [self scrollToBottom];
@@ -390,6 +417,27 @@
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
     //停止语音播放
     [SCUTAudioPlayTool stop];
+}
+
+-(void)addDataSourcesWithMessage:(EMMessage *)msg{
+
+//        if (self.dataSources.count == 0) {  //模拟数据
+//            long long timestamp = ([[NSDate date] timeIntervalSince1970] - 60 * 60 * 24 * 2) * 1000;
+//             NSString *timeStr = [SCUTTimeTool timeStr:timestamp];
+//            [self.dataSources addObject:timeStr];
+//        }
+    
+//     1.判断EMMessage对象前面是否要加 "时间"
+    NSString *timeStr = [SCUTTimeTool timeStr:msg.timestamp];
+    if (![self.currentTimeStr isEqualToString:timeStr]) {
+        [self.dataSources addObject:timeStr];
+        self.currentTimeStr = timeStr;
+    }
+    
+    // 2.再加EMMessage
+    [self.dataSources addObject:msg];
+    
+    
 }
 
 

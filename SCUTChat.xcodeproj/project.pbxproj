@@ -57,6 +57,8 @@
 		934D04B31CE9E83A00489AB5 /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 934D04A11CE9E83A00489AB5 /* UIImageView+HighlightedWebCache.m */; };
 		934D04B41CE9E83A00489AB5 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 934D04A31CE9E83A00489AB5 /* UIImageView+WebCache.m */; };
 		934D04B51CE9E83A00489AB5 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 934D04A51CE9E83A00489AB5 /* UIView+WebCacheOperation.m */; };
+		934D04B81CE9F39500489AB5 /* SCUTTimeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 934D04B71CE9F39500489AB5 /* SCUTTimeCell.m */; };
+		934D04BB1CE9F61300489AB5 /* SCUTTimeTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 934D04BA1CE9F61300489AB5 /* SCUTTimeTool.m */; };
 		93932E271CE8B14500E1E48E /* SCUTAudioPlayTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 93932E261CE8B14400E1E48E /* SCUTAudioPlayTool.m */; };
 		93932E4D1CE8BDDE00E1E48E /* EMAudioPlayerUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 93932E2F1CE8BDDE00E1E48E /* EMAudioPlayerUtil.m */; };
 		93932E4E1CE8BDDE00E1E48E /* EMAudioRecorderUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 93932E311CE8BDDE00E1E48E /* EMAudioRecorderUtil.m */; };
@@ -257,6 +259,10 @@
 		934D04A31CE9E83A00489AB5 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		934D04A41CE9E83A00489AB5 /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		934D04A51CE9E83A00489AB5 /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
+		934D04B61CE9F39500489AB5 /* SCUTTimeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCUTTimeCell.h; sourceTree = "<group>"; };
+		934D04B71CE9F39500489AB5 /* SCUTTimeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCUTTimeCell.m; sourceTree = "<group>"; };
+		934D04B91CE9F61300489AB5 /* SCUTTimeTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCUTTimeTool.h; sourceTree = "<group>"; };
+		934D04BA1CE9F61300489AB5 /* SCUTTimeTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCUTTimeTool.m; sourceTree = "<group>"; };
 		93932E251CE8B14400E1E48E /* SCUTAudioPlayTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCUTAudioPlayTool.h; sourceTree = "<group>"; };
 		93932E261CE8B14400E1E48E /* SCUTAudioPlayTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCUTAudioPlayTool.m; sourceTree = "<group>"; };
 		93932E2A1CE8BDDE00E1E48E /* EMCDDeviceManagerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMCDDeviceManagerDelegate.h; sourceTree = "<group>"; };
@@ -778,7 +784,7 @@
 		930709751CE774070004BB9B /* Chat */ = {
 			isa = PBXGroup;
 			children = (
-				93932E241CE8B12600E1E48E /* SCUTAudioPlayTool */,
+				934D04BC1CE9F63100489AB5 /* Tool */,
 				9336D0561CE8166D00EA40F1 /* SCUTChatCell */,
 				9336D0551CE8164D00EA40F1 /* Controller */,
 			);
@@ -799,6 +805,8 @@
 			children = (
 				9336D0571CE818E800EA40F1 /* SCUTChatCell.h */,
 				9336D0581CE818E800EA40F1 /* SCUTChatCell.m */,
+				934D04B61CE9F39500489AB5 /* SCUTTimeCell.h */,
+				934D04B71CE9F39500489AB5 /* SCUTTimeCell.m */,
 			);
 			name = SCUTChatCell;
 			sourceTree = "<group>";
@@ -851,6 +859,24 @@
 				934D04A51CE9E83A00489AB5 /* UIView+WebCacheOperation.m */,
 			);
 			path = SDWebImage;
+			sourceTree = "<group>";
+		};
+		934D04BC1CE9F63100489AB5 /* Tool */ = {
+			isa = PBXGroup;
+			children = (
+				934D04BD1CE9F64900489AB5 /* SCUTTimeTool */,
+				93932E241CE8B12600E1E48E /* SCUTAudioPlayTool */,
+			);
+			name = Tool;
+			sourceTree = "<group>";
+		};
+		934D04BD1CE9F64900489AB5 /* SCUTTimeTool */ = {
+			isa = PBXGroup;
+			children = (
+				934D04B91CE9F61300489AB5 /* SCUTTimeTool.h */,
+				934D04BA1CE9F61300489AB5 /* SCUTTimeTool.m */,
+			);
+			name = SCUTTimeTool;
 			sourceTree = "<group>";
 		};
 		93932E241CE8B12600E1E48E /* SCUTAudioPlayTool */ = {
@@ -1089,12 +1115,14 @@
 				930707FA1CE6CB4B0004BB9B /* LoginViewController.m in Sources */,
 				93932E501CE8BDDE00E1E48E /* EMCDDeviceManager+Microphone.m in Sources */,
 				934D04A91CE9E83A00489AB5 /* SDWebImageCompat.m in Sources */,
+				934D04B81CE9F39500489AB5 /* SCUTTimeCell.m in Sources */,
 				934D04A81CE9E83A00489AB5 /* SDImageCache.m in Sources */,
 				934D04B11CE9E83A00489AB5 /* UIImage+MultiFormat.m in Sources */,
 				934D04B01CE9E83A00489AB5 /* UIImage+GIF.m in Sources */,
 				934D04AB1CE9E83A00489AB5 /* SDWebImageDownloader.m in Sources */,
 				930709641CE7318D0004BB9B /* ConversationTableViewController.m in Sources */,
 				934D04B41CE9E83A00489AB5 /* UIImageView+WebCache.m in Sources */,
+				934D04BB1CE9F61300489AB5 /* SCUTTimeTool.m in Sources */,
 				934D04AF1CE9E83A00489AB5 /* UIButton+WebCache.m in Sources */,
 				93932E561CE8BDDE00E1E48E /* EMVoiceConverter.mm in Sources */,
 				93932E4E1CE8BDDE00E1E48E /* EMAudioRecorderUtil.m in Sources */,

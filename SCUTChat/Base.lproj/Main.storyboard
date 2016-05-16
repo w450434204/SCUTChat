@@ -290,6 +290,30 @@
                                             <outlet property="messageLabel" destination="eNc-2x-iNi" id="PS9-f8-mSm"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="TimeCell" rowHeight="24" id="UEK-7D-nqF" customClass="SCUTTimeCell">
+                                        <rect key="frame" x="0.0" y="202" width="320" height="24"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="UEK-7D-nqF" id="uMV-wG-j6X">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="24"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2sr-84-FJB">
+                                                    <rect key="frame" x="147" y="6" width="27" height="12"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                            <constraints>
+                                                <constraint firstItem="2sr-84-FJB" firstAttribute="centerY" secondItem="uMV-wG-j6X" secondAttribute="centerY" id="2k6-Vp-Tqe"/>
+                                                <constraint firstItem="2sr-84-FJB" firstAttribute="centerX" secondItem="uMV-wG-j6X" secondAttribute="centerX" id="D9U-sU-aLG"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="timeLabel" destination="2sr-84-FJB" id="Tpl-Yv-7yn"/>
+                                        </connections>
+                                    </tableViewCell>
                                 </prototypes>
                                 <connections>
                                     <outlet property="dataSource" destination="0wz-Ve-mRh" id="MTI-RS-P21"/>
